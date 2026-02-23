@@ -1,4 +1,4 @@
-// Authors: Wesley Yarlott, Yasemin Tuncer
+// Authors: Westley Yarlott, Yasemin Tuncer
 // Demonstration of password entropy
 // Why short passwords are insecure
 // Why increasing character set dramatically increases attack time
