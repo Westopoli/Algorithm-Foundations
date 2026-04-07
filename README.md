@@ -1,5 +1,5 @@
-# Java-Programs
-Programs designed to convey algorithm analysis literacy in Java.
+# Algorithm-Foundations
+Programs designed to convey algorithm analysis literacy.
 
 ## Authors
     Westley Yarlott
