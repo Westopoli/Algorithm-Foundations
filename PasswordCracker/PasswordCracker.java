@@ -1,3 +1,4 @@
+// Authors: Westley Yarlott, Yasemin Tuncer
 // Demonstration of password entropy
 // Why short passwords are insecure
 // Why increasing character set dramatically increases attack time
@@ -445,7 +446,7 @@ public class PasswordCracker {
     }
 
     // Progress bar utility function to display cracking progress based on attempts and total combinations
-        // source: chatGPT      --------------> @yasemin should we include this? 
+        // source: chatGPT      
     static void updateProgress(long current, long total) {
         int barWidth = 80;
 
@@ -513,7 +514,7 @@ public class PasswordCracker {
         System.out.println("Input:");
         printPolicyOptions();
 
-        // Policy selection loop (switch statment would be clearner if you're bored @yasemin)
+        // Policy selection loop 
         while (true) {
             String strengthInput = scanner.nextLine();
             try {
