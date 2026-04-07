@@ -84,7 +84,7 @@
 // Recursive call count
 // Maximum depth reached
 
-// 3 - Validation Engine 
+// 3 - Validation Functions 
 // Hash comparison (SHA256)
 // Constraint verification
 
@@ -375,14 +375,14 @@ public class PasswordCracker {
     }
 
     // Validation functions for each password policy, loops until user inputs a valid password that meets the policy requirements, then returns the validated password
-    static Password validateLength(int strength,Password targetPassword, String targetHash, Scanner scanner) {
-        if(strength != 5) {
-            throw new IllegalArgumentException("Invalid strength option for length validation. Expected 5.");
+    static Password validateLength(int requiredLength, Password targetPassword, String targetHash, Scanner scanner) {
+        if (requiredLength <= 0) {
+            throw new IllegalArgumentException("Invalid required length for length validation.");
         }
         while(true) { 
             // if password doesn't meet length requirement or contains a character not in the character set, ask for input again
-            if (strength == 5 && targetPassword.length != 5) {
-                System.out.println("Password does not meet length requirement (at least 5 characters).");
+            if (targetPassword.length != requiredLength) {
+                System.out.println("Password does not meet length requirement (exactly " + requiredLength + " characters).");
                 System.out.println("Please input the target password:");
                 targetPassword = new Password(scanner.nextLine());
                 continue;
@@ -579,7 +579,7 @@ public class PasswordCracker {
                  targetPassword = validateStrong(unvalidatedPassword, targetHash, scanner);
             }
             else {
-                targetPassword = validateLength(strength, unvalidatedPassword, targetHash, scanner);
+                targetPassword = validateLength(policy.length, unvalidatedPassword, targetHash, scanner);
             }
 
             targetHash = HashUtil.SHA256(targetPassword.value);
@@ -608,7 +608,7 @@ public class PasswordCracker {
                 if (strength == 2) { targetPassword = validateWeak(unvalidatedPassword, targetHash, scanner); }
                 else if (strength == 3) { targetPassword = validateModerate(unvalidatedPassword, targetHash, scanner); }
                 else if (strength == 4) { targetPassword = validateStrong(unvalidatedPassword, targetHash, scanner); }
-                else { targetPassword = validateLength(strength, unvalidatedPassword, targetHash, scanner); }
+                else { targetPassword = validateLength(policy.length, unvalidatedPassword, targetHash, scanner); }
 
                 targetHash = HashUtil.SHA256(targetPassword.value);
                 System.out.println("Hash: " + targetHash);
