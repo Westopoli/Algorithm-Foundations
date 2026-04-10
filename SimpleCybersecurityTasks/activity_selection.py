@@ -4,32 +4,42 @@ Owner: Person B
 
 Given a list of maintenance windows (start, finish), select the
 maximum number of non-overlapping windows using a greedy approach.
-
-You MAY use built-in sort here (it's not the D&C problem).
 """
-
 
 def activity_selection(activities: list[tuple[int, int]]) -> list[int]:
     """
     Select the maximum set of non-overlapping activities.
-
+ 
     Args:
         activities: list of (start_time, finish_time) tuples.
-
+ 
     Returns:
-        List of indices (relative to the ORIGINAL input order)
+        List of indices (relative to the original input order)
         of the selected activities.
+ 
+    Time:  O(n log n) dominated by the sort
+    Space: O(n) for the indexed copy
     """
-    # TODO: Implement greedy activity selection.
-    #
-    # Steps:
-    #   1. If activities is empty, return [].
-    #   2. Create an indexed list: [(start, finish, original_index), ...]
-    #   3. Sort by finish time (ascending).
-    #   4. Greedily pick the first activity, then keep picking
-    #      the next activity whose start_time >= last picked finish_time.
-    #   5. Return the list of original indices of selected activities.
-    #
-    # Time:  O(n log n) dominated by the sort
-    # Space: O(n) for the indexed copy
-    pass
+    # Base case
+    if not activities:
+        return []
+ 
+    # Pair each activity with its original index so sorting doesn't lose it.
+    indexed = [(start, finish, i) for i, (start, finish) in enumerate(activities)]
+ 
+    # Greedy strategy: sort by finish time ascending.
+    # Picking the earliest-finishing activity leaves the most room for future ones.
+    indexed.sort(key=lambda a: a[1])
+ 
+    # Take the first activity unconditionally
+    selected_indices = [indexed[0][2]]
+    last_finish = indexed[0][1]
+ 
+    # Sweep through the rest. For each candidate, only one comparison is needed:
+    # does it start at or after the last selected activity finished?
+    for start, finish, original_index in indexed[1:]:
+        if start >= last_finish:
+            selected_indices.append(original_index)
+            last_finish = finish
+ 
+    return selected_indices
