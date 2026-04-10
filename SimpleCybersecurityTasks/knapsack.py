@@ -11,32 +11,27 @@ DO NOT use a greedy approach — this MUST be DP.
 
 
 def knapsack(weights: list[int], values: list[int], capacity: int) -> int:
-    """
-    Solve the 0/1 knapsack problem via bottom-up DP.
+    n = len(values)
 
-    Args:
-        weights:  list of item weights  (cpu costs)
-        values:   list of item values   (threat coverage)
-        capacity: maximum total weight   (processing budget)
+    if len(weights) != n:
+        raise ValueError("weights and values must have the same length")
+    if capacity < 0:
+        raise ValueError("capacity must be non-negative")
 
-    Returns:
-        Maximum achievable value.
-    """
-    # TODO: Implement bottom-up DP with a 2D table.
-    #
-    # Steps:
-    #   1. Let n = len(weights).
-    #   2. Create a (n+1) x (capacity+1) table `dp` initialized to 0.
-    #   3. For each item i from 1..n:
-    #        For each weight w from 0..capacity:
-    #          If weights[i-1] <= w:
-    #            dp[i][w] = max(dp[i-1][w],
-    #                          dp[i-1][w - weights[i-1]] + values[i-1])
-    #          Else:
-    #            dp[i][w] = dp[i-1][w]
-    #   4. Return dp[n][capacity].
-    #
-    # Time:  O(n * capacity)
-    # Space: O(n * capacity) for the 2D table
-    #         (can be optimized to O(capacity) with 1D rolling array)
-    pass
+    row = len(values)
+    col = capacity + 1
+
+    table = [[0] * col for _ in range(row)] # [0] * col gives [0,0,0,0,0,0,0] then we times that by row times
+
+    for i in range(row):
+        for j in range(col):
+            table[i][j] = table[i - 1][j] if i > 0 else 0
+
+            if weights[i] <= j:
+                include = values[i] + (table[i - 1][j - weights[i]] if i > 0 else 0)
+                table[i][j] = max(table[i][j], include)
+
+    return table[row - 1][col - 1]
+
+
+
