@@ -7,14 +7,13 @@ Person B: activity_selection.py, main.py (this file), test data
 """
 
 import time
+import random
 from merge_sort import merge_sort
 from activity_selection import activity_selection
 from knapsack import knapsack
 
 
-# ---------------------------------------------------------------------------
 # Timing helper
-# ---------------------------------------------------------------------------
 def time_execution(func, *args):
     """Run func(*args), return (result, elapsed_ms)."""
     start = time.perf_counter()
@@ -23,16 +22,13 @@ def time_execution(func, *args):
     return result, elapsed_ms
 
 
-# ===========================================================================
 # 1. MERGE SORT — Vulnerability Severity Ranker
-# ===========================================================================
 def run_merge_sort_tests():
     print("=" * 60)
     print("MERGE SORT — Vulnerability Severity Ranker")
     print("=" * 60)
 
-    # Each vulnerability is (name, cvss_score).
-    # We sort by CVSS descending so most critical appear first.
+    # Each vulnerability: (name, cvss_score)
     test_cases = {
         "Small / Random": [
             ("CVE-2025-1001", 7.5),
@@ -62,20 +58,19 @@ def run_merge_sort_tests():
     }
 
     for name, vulns in test_cases.items():
+        # Strip to just the scores for the sort
         scores = [v[1] for v in vulns]
         sorted_scores, ms = time_execution(merge_sort, scores)
 
-        # Map back to names (descending order = most critical first)
-        sorted_scores_desc = sorted_scores[::-1]
-        score_to_vulns = {v[1]: v[0] for v in vulns}
+        # Reverse for descending order (most critical first)
+        sorted_desc = sorted_scores[::-1]
 
         print(f"\nTest: {name}")
         print(f"  Input scores:  {scores}")
-        print(f"  Sorted (desc): {sorted_scores_desc}")
+        print(f"  Sorted (desc): {sorted_desc}")
         print(f"  Time: {ms:.4f} ms")
 
-    # --- Benchmarking across input sizes ---
-    import random
+    # Benchmark across input sizes
     print("\n--- Benchmark ---")
     print(f"{'Size':<10} {'Time (ms)':<15}")
     for size in [10, 100, 1000, 5000, 10000]:
@@ -84,15 +79,13 @@ def run_merge_sort_tests():
         print(f"{size:<10} {ms:<15.4f}")
 
 
-# ===========================================================================
 # 2. ACTIVITY SELECTION — Server Maintenance Window Planner
-# ===========================================================================
 def run_activity_selection_tests():
     print("\n" + "=" * 60)
     print("ACTIVITY SELECTION — Server Maintenance Window Planner")
     print("=" * 60)
 
-    # Each activity: (name, start_hour, finish_hour)
+    # Each window: (name, start, finish)
     test_cases = {
         "Small / Normal": [
             ("Patch-A", 0, 2),
@@ -120,39 +113,39 @@ def run_activity_selection_tests():
     }
 
     for name, windows in test_cases.items():
-        activities = [(w[1], w[2]) for w in windows]
-        selected_indices, ms = time_execution(activity_selection, activities)
+        # Strip to (start, finish) pairs for the algorithm
+        pairs = [(w[1], w[2]) for w in windows]
+        selected_indices, ms = time_execution(activity_selection, pairs)
 
+        # Map indices back to names for display
         selected_names = [windows[i][0] for i in selected_indices]
-        print(f"\nTest: {name}")
-        print(f"  Windows: {[(w[0], w[1], w[2]) for w in windows]}")
-        print(f"  Selected: {selected_names}")
-        print(f"  Count: {len(selected_indices)}")
-        print(f"  Time: {ms:.4f} ms")
 
-    # --- Benchmark ---
-    import random
+        print(f"\nTest: {name}")
+        print(f"  Windows:  {windows}")
+        print(f"  Selected: {selected_names}")
+        print(f"  Count:    {len(selected_indices)}")
+        print(f"  Time:     {ms:.4f} ms")
+
+    # Benchmark
     print("\n--- Benchmark ---")
     print(f"{'Size':<10} {'Time (ms)':<15}")
     for size in [10, 100, 1000, 5000, 10000]:
-        acts = []
+        pairs = []
         for _ in range(size):
             s = random.randint(0, 1000)
             f = s + random.randint(1, 50)
-            acts.append((s, f))
-        _, ms = time_execution(activity_selection, acts)
+            pairs.append((s, f))
+        _, ms = time_execution(activity_selection, pairs)
         print(f"{size:<10} {ms:<15.4f}")
 
 
-# ===========================================================================
 # 3. KNAPSACK — Firewall Rule Budget
-# ===========================================================================
 def run_knapsack_tests():
     print("\n" + "=" * 60)
     print("0/1 KNAPSACK — Firewall Rule Budget")
     print("=" * 60)
 
-    # Each rule: (name, cpu_cost, threat_coverage_value)
+    # Each rule: (name, cpu_cost, coverage_value)
     test_cases = {
         "Small / Normal": {
             "rules": [
@@ -196,6 +189,7 @@ def run_knapsack_tests():
     }
 
     for name, data in test_cases.items():
+        # Strip to parallel weight and value lists
         weights = [r[1] for r in data["rules"]]
         values = [r[2] for r in data["rules"]]
         cap = data["capacity"]
@@ -203,13 +197,12 @@ def run_knapsack_tests():
         max_val, ms = time_execution(knapsack, weights, values, cap)
 
         print(f"\nTest: {name}")
-        print(f"  Rules: {[(r[0], r[1], r[2]) for r in data['rules']]}")
-        print(f"  Capacity: {cap}")
+        print(f"  Rules:              {data['rules']}")
+        print(f"  Capacity:           {cap}")
         print(f"  Max coverage value: {max_val}")
-        print(f"  Time: {ms:.4f} ms")
+        print(f"  Time:               {ms:.4f} ms")
 
-    # --- Benchmark ---
-    import random
+    # Benchmark
     print("\n--- Benchmark ---")
     print(f"{'Items':<10} {'Capacity':<10} {'Time (ms)':<15}")
     for n_items in [10, 50, 100, 200]:
@@ -220,9 +213,7 @@ def run_knapsack_tests():
         print(f"{n_items:<10} {cap:<10} {ms:<15.4f}")
 
 
-# ===========================================================================
 # RUN ALL
-# ===========================================================================
 if __name__ == "__main__":
     run_merge_sort_tests()
     run_activity_selection_tests()
