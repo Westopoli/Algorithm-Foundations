@@ -20,5 +20,9 @@ class AirportNetwork:
     
     # equivalent to add edge
     def add_connecting_flight(self, location1, location2, distance):
+        if distance < 0:
+            print("Connecting flight must have a distance greater than 0")
+            return
+
         self.locations[location1].append((location2, distance))
         self.locations[location2].append((location1, distance))
