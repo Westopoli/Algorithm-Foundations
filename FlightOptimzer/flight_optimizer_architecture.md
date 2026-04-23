@@ -280,11 +280,3 @@ All charts saved as PNG files for inclusion in the report.
 Adjust as needed — the key constraint is that both members need to present portions of the project, so both should understand the algorithms and results.
 
 ---
-
-## 5. Open Decisions
-
-- [ ] **Language lock-in:** Python recommended (matplotlib, heapq, clean pseudocode-to-code mapping). Confirm with teammate.
-- [ ] **Airport selection:** Pick ~20 real US airports with plausible synthetic pricing, or go international? Real IATA codes help the presentation.
-- [ ] **Bellman-Ford:** Spec says "Dijkstra **or** Bellman-Ford." Dijkstra is the right pick since all weights are positive. Could optionally implement both for extra comparison material in §5.
-- [ ] **BFS vs DFS:** Spec says "BFS **and/or** DFS." Implementing both is minimal extra work and strengthens the traversal comparison.
-- [ ] **Presentation tool:** Google Slides, PowerPoint, or something else?
