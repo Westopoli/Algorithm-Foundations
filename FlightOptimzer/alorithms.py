@@ -83,29 +83,23 @@ def reconstruct_path(predecessors, start, end):
     return []
 
 
-class UnionFind:
-    def __init__(self, vertices):
-        self.parent = {v: v for v in vertices}
-        self.rank = {v: 0 for v in vertices}
-
-    def find(self, x):
-        # flatten tree so future lookups are faster
-        if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])
-        return self.parent[x]
-
-    def union(self, x, y):
-        rx, ry = self.find(x), self.find(y)
-        if rx == ry:
-            return
-        # attach smaller tree under larger tree
-        if self.rank[rx] < self.rank[ry]:
-            self.parent[rx] = ry
-        elif self.rank[rx] > self.rank[ry]:
-            self.parent[ry] = rx
-        else:
-            self.parent[ry] = rx
-            self.rank[rx] += 1
+def already_connected(mst, u, v):
+    # bfs through only the mst edges built so far
+    if u == v:
+        return True
+    visited = {u}
+    queue = [u]
+    while queue:
+        current = queue.pop(0)
+        # wieght isn't needed, _ instead
+        for (a, b, _) in mst:
+            if a == current and b not in visited:
+                visited.add(b)
+                queue.append(b)
+            if b == current and a not in visited:
+                visited.add(a)
+                queue.append(a)
+    return v in visited
 
 
 def kruskal(graph):
@@ -113,13 +107,11 @@ def kruskal(graph):
     undirected = graph.to_undirected()
     edges = undirected.edges()
     edges.sort(key=lambda e: e[2])
-    uf = UnionFind(undirected.locations)
     mst = []
 
     for (u, v, weight) in edges:
         # only add edge if it connects two separate components
-        if uf.find(u) != uf.find(v):
-            uf.union(u, v)
+        if not already_connected(mst, u, v):
             mst.append((u, v, weight))
         if len(mst) == len(undirected.locations) - 1:
             break
