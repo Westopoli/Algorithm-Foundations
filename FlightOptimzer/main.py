@@ -49,6 +49,16 @@ def main():
     print("loaded " + str(graph.vertex_count()) + " airports, "
           + str(graph.edge_count()) + " routes")
 
+    # print adjacency list
+    print("\n=== adjacency list ===")
+    for airport in graph.locations:
+        flights = ""
+        for (destination, cost) in graph.locations[airport]:
+            if flights != "":
+                flights += ", "
+            flights += destination + "($" + str(cost) + ")"
+        print("  " + airport + " -> " + flights)
+
     # run algorithm demos on the real dataset
     demo_bfs(graph, "ATL")
     demo_dfs(graph, "ATL")
