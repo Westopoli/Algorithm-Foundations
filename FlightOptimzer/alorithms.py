@@ -4,8 +4,8 @@
 # Called by: main.py (for demos), experiments.py (for timing benchmarks)
 
 def bfs(graph, start):
-    visited = {start}         # tracks visited nodes
-    queue = [start]         # list of next nodes
+    visited = {start}       # tracks visited nodes
+    queue = [start]         # dictionary of next nodes
     distances = {start: 0}  # depth tracking
 
     while queue:
@@ -27,4 +27,25 @@ def bfs(graph, start):
                 queue.append(location)
 
     return distances
+
+def dfs(graph, start):
+    visited = {}        # same as bfs, but don't include start so it makes it into the stack
+    stack = [start]     # stack instead of queue, still dictionary
+    order = []          # order instead of depth
+
+    while stack: 
+        current = stack.pop(0)
+        if current not in visited:
+            visited.add(current)
+            order.append(current)
+            # dfs uses more "logic" than bfs to reach the end
+            for (location, _) in graph.locations(current):
+                if location not in visited:
+                    stack.append(location)
+    
+    return order
+
+def dijkstra(graph, start):
+    
+
 
